@@ -1,4 +1,4 @@
-local Animation = require('src/hero/animation')
+local Animation = require('src/common/animation')
 local PlayerDirection = require("src/hero/constants")
 local Drawer = {}
 

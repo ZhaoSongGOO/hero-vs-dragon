@@ -4,6 +4,7 @@
 -- file and returns the table that it returned (the 'Hero' table).
 -- We store it in a variable, also named 'Hero' by convention.
 local Hero = require('src/hero/hero')
+local Tree = require('src/tree/tree')
 
 -- A global variable to hold our player object
 local player
@@ -17,6 +18,8 @@ function love.load()
     -- hero instance and we store it in the 'player' variable.
     -- We can give it a starting position, like (100, 300).
     player = Hero.new(100, 300)
+
+    tree = Tree.new(600, 50)
 end
 
 function love.update(dt)
@@ -24,10 +27,12 @@ function love.update(dt)
     -- We just tell our player object to update itself.
     -- The player object itself knows how to handle input and animation.
     player:update(dt)
+    tree:update(dt)
 end
 
 function love.draw()
     -- The draw function is also very clean.
     -- We just tell our player object to draw itself.
+    tree:draw()
     player:draw()
 end
