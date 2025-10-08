@@ -22,33 +22,34 @@ function Animation.new(ctx, src, config)
     instance.frameDuration = 0.1
     instance.timer = 0
     instance.ctx = ctx
+    instance.scaleDirection = config.scale ~= nil and config.scale or 1
     return instance
 end
 
+function Animation:reset()
+    self.currentFrame = 1
+    self.timer = 0
+end
+
 function Animation:update(dt)
-    if self.ctx.isMoving then
-        self.timer = self.timer + dt
-        if self.timer >= self.frameDuration then
-            self.timer = self.timer - self.frameDuration
-            self.currentFrame = self.currentFrame + 1
-            if self.currentFrame > self.totalFrames then
-                self.currentFrame = 1
-            end
+    -- if self.ctx.isMoving then
+    self.timer = self.timer + dt
+    if self.timer >= self.frameDuration then
+        self.timer = self.timer - self.frameDuration
+        self.currentFrame = self.currentFrame + 1
+        if self.currentFrame > self.totalFrames then
+            self.currentFrame = 1
         end
-    else
-        self.currentFrame = 1
-        self.timer = 0
     end
+    -- else
+    --     self.currentFrame = 1
+    --     self.timer = 0
+    -- end
 end
 
 function Animation:draw()
     local currentQuad = self.quads[self.currentFrame]
-
-    scaleX = 5
-    if self.ctx.direction == 0 then
-        scaleX = -5
-    end
-    love.graphics.draw(self.sheet, currentQuad, self.ctx.x, self.ctx.y, 0, scaleX, 5, 384 / 12, 0)
+    love.graphics.draw(self.sheet, currentQuad, self.ctx.x, self.ctx.y, 0, self.scaleDirection * 3, 3, 384 / 12, 0)
 end
 
 

@@ -1,44 +1,125 @@
 local Animation = require('src/hero/animation')
+local PlayerDirection = require("src/hero/constants")
 local Drawer = {}
 
 Drawer.__index = Drawer
 
 function Drawer.new(ctx)
     local instance = setmetatable({}, Drawer)
-    instance.walkSpriteSheet = love.graphics.newImage('asset/walk_side.png')
-    -- local frameWidth = 384 / 6 -- 64 pixels
-    -- local frameHeight = 64
-    -- instance.totalFrames = 6
-
-    -- -- 4. Create Quads for animation
-    -- instance.quads = {}
-    -- for i = 1, instance.totalFrames do
-    --     local quadX = (i - 1) * frameWidth
-    --     local quadY = 0
-    --     instance.quads[i] = love.graphics.newQuad(quadX, quadY, frameWidth, frameHeight, instance.walkSpriteSheet:getDimensions())
-    -- end
-
-    -- -- 5. Initialize animation and state variables
-    -- instance.currentFrame = 1
-    -- instance.frameDuration = 0.1
-    -- instance.timer = 0
     instance.ctx = ctx
     instance.animations = {
-        walkSide = Animation.new(ctx, 'asset/walk_side.png', {
+        walkLeft = Animation.new(ctx, 'asset/walk_side.png', {
+            width = 384,
+            height = 64,
+            count = 6,
+            scale = -1,
+        }),
+        walkRight = Animation.new(ctx, 'asset/walk_side.png', {
+            width = 384,
+            height = 64,
+            count = 6,
+        }),
+        walkUp = Animation.new(ctx, 'asset/walk_up.png', {
             width = 384,
             height = 64,
             count = 6
-        })
+        }),
+        walkDown = Animation.new(ctx, 'asset/walk_down.png', {
+            width = 384,
+            height = 64,
+            count = 6
+        }),
+        attackLeft = Animation.new(ctx, 'asset/attack_side.png', {
+            width = 512,
+            height = 64,
+            count = 8,
+            scale = -1,
+        }),
+        attackRight = Animation.new(ctx, 'asset/attack_side.png', {
+            width = 512,
+            height = 64,
+            count = 8
+        }),
+        attackDown = Animation.new(ctx, 'asset/attack_down.png', {
+            width = 512,
+            height = 64,
+            count = 8
+        }),
+        attackUp = Animation.new(ctx, 'asset/attack_up.png', {
+            width = 512,
+            height = 64,
+            count = 8
+        }),
     }
     return instance
 end
 
 function Drawer:update(dt)
-    self.animations.walkSide:update(dt)
+    if self.ctx.isMoving then
+        if self.ctx.direction == PlayerDirection.Left then
+            self.animations.walkLeft:update(dt)
+        elseif self.ctx.direction == PlayerDirection.Right then
+            self.animations.walkRight:update(dt)
+        elseif self.ctx.direction == PlayerDirection.Top then
+            self.animations.walkUp:update(dt)
+        elseif self.ctx.direction == PlayerDirection.Bottom then
+            self.animations.walkDown:update(dt)
+        end
+    elseif self.ctx.isAttack then
+        if self.ctx.direction == PlayerDirection.Left then
+            self.animations.attackLeft:update(dt)
+        elseif self.ctx.direction == PlayerDirection.Right then
+            self.animations.attackRight:update(dt)
+        elseif self.ctx.direction == PlayerDirection.Top then
+            self.animations.attackUp:update(dt)
+        elseif self.ctx.direction == PlayerDirection.Bottom then
+            self.animations.attackDown:update(dt)
+        end
+    else
+        if self.ctx.direction == PlayerDirection.Left then
+            self.animations.walkLeft:reset()
+        elseif self.ctx.direction == PlayerDirection.Right then
+            self.animations.walkRight:reset()
+        elseif self.ctx.direction == PlayerDirection.Top then
+            self.animations.walkUp:reset()
+        elseif self.ctx.direction == PlayerDirection.Bottom then
+            self.animations.walkDown:reset()
+        end
+    end
 end
 
 function Drawer:draw()
-    self.animations.walkSide:draw()
+    if self.ctx.isMoving then
+        if self.ctx.direction == PlayerDirection.Left then
+            self.animations.walkLeft:draw()
+        elseif self.ctx.direction == PlayerDirection.Right then
+            self.animations.walkRight:draw()
+        elseif self.ctx.direction == PlayerDirection.Top then
+            self.animations.walkUp:draw()
+        elseif self.ctx.direction == PlayerDirection.Bottom then
+            self.animations.walkDown:draw(dt)
+        end
+    elseif self.ctx.isAttack then
+        if self.ctx.direction == PlayerDirection.Left then
+            self.animations.attackLeft:draw()
+        elseif self.ctx.direction == PlayerDirection.Right then
+            self.animations.attackRight:draw()
+        elseif self.ctx.direction == PlayerDirection.Top then
+            self.animations.attackUp:draw()
+        elseif self.ctx.direction == PlayerDirection.Bottom then
+            self.animations.attackDown:draw(dt)
+        end
+    else
+        if self.ctx.direction == PlayerDirection.Left then
+            self.animations.walkLeft:draw()
+        elseif self.ctx.direction == PlayerDirection.Right then
+            self.animations.walkRight:draw()
+        elseif self.ctx.direction == PlayerDirection.Top then
+            self.animations.walkUp:draw()
+        elseif self.ctx.direction == PlayerDirection.Bottom then
+            self.animations.walkDown:draw(dt)
+        end
+    end
 end
 
 return Drawer
